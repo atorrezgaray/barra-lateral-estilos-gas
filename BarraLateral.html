@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <base target="_top">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- ARCHIVO CSS INSERTAR EN SCRIPLET-->
+    <?!= HtmlService.createHtmlOutputFromFile('Stylesheet').getContent(); ?>
+    
+  </head>
+  
+  <body>
+
+    <img class="img-fluid p-3" src="https://q-xx.bstatic.com/xdata/images/hotel/max500/138605090.jpg?k=6fad296322c59b5667816a8743e8e6ac4252efc295fdba23a3376f83565af341&o=">
+
+    <div class="d-flex flex-column m-2 align-items-center">
+
+      <!-- caja con todo los estilos -->
+      <div id="cajaEstilos">
+        <!-- <button class="btn btn-warning m-2" onclick="google.script.run.borrarEstilos()">Barra estilos</button> -->
+
+        
+      </div>
+
+      <!-- Botones de borrar -->
+      <div class="mt-5">
+        <button class="btn btn-success" onclick="agregarEstilo()"><i class="bi bi-plus-circle"></i></button>
+        <button class="btn btn-warning" onclick="google.script.run.borrarEstilos()">Barra estilos</button>
+        <button class="btn btn-danger" onclick="google.script.run.borrarTodo()"><i class="bi bi-trash"></i></button>
+      </div>
+    </div>
+
+    <?!= HtmlService.createHtmlOutputFromFile('JavaScript').getContent(); ?>
+
+  </body>
+</html>

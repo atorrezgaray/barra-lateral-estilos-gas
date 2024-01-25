@@ -1,0 +1,194 @@
+<script>
+      //cantidad de estilos iniciales
+      let estiloActual = 0;
+
+      function agregarEstilo(numActual){
+
+        //sin paraemtro
+        if (numActual == null){
+          estiloActual++;
+          numActual = estiloActual;
+        }
+
+        //crear el div con el id del estilo
+        let div = document.createElement('div');
+        div.id = 'estilo' + numActual;  
+
+        //boton aplicar estilo
+        let boton = document.createElement('button');
+        boton.classList.add('btn', 'btn-primary', 'm-2', 'boton'+numActual);
+        boton.style.borderWidth = '0px';
+        boton.textContent = 'Aplicar estilo '+numActual;
+        boton.onclick = () => google.script.run.aplicarEstilo(numActual);
+
+        //boton guardar estilo
+        let botonPlus = document.createElement('button');
+        botonPlus.classList.add('btn', 'btn-primary', 'boton'+numActual);
+        botonPlus.style.borderWidth = '0px';
+        botonPlus.onclick = () => {
+          google.script.run.withSuccessHandler(
+            function(obj){
+              let botones = document.getElementsByClassName('boton'+numActual);
+              Array.from(botones).forEach(boton => {
+                boton.style.color = obj.colorLetra;
+                boton.style.backgroundColor = obj.colorFondo;
+
+                //borde sup
+                boton.style.borderTopColor = obj.BordeSupCO;
+                boton.style.borderTopStyle = obtenerEstiloBorde(obj.BordeSupST);
+                boton.style.borderTopWidth = obtenerGrosorBorde(obj.BordeSupST);
+
+                //borde inf
+                boton.style.borderBottomColor = obj.BordeInfCO;
+                boton.style.borderBottomStyle = obtenerEstiloBorde(obj.BordeInfST);
+                boton.style.borderBottomWidth = obtenerGrosorBorde(obj.BordeInfST);
+
+                //borde izq
+                boton.style.borderLeftColor = obj.BordeIzqCO;
+                boton.style.borderLeftStyle = obtenerEstiloBorde(obj.BordeIzqST);
+                boton.style.borderLeftWidth = obtenerGrosorBorde(obj.BordeIzqST);
+
+                //borde der
+                boton.style.borderRightColor = obj.BordeDerCO;
+                boton.style.borderRightStyle = obtenerEstiloBorde(obj.BordeDerST);
+                boton.style.borderRightWidth = obtenerGrosorBorde(obj.BordeDerST);
+
+              });
+            }).guardarEstilo(numActual);
+        };
+
+        //botn borrar estilo
+        let botonBorrar = document.createElement('button');
+        botonBorrar.classList.add('btn', 'btn-primary', 'boton'+numActual);
+        botonBorrar.style.borderWidth = '0px';
+        botonBorrar.onclick = () => {
+          document.getElementById('estilo'+numActual).remove();//eliminar elementos dentro del DOM
+          google.script.run.eliminarEstilo(numActual);
+        }
+
+        //icono +
+        let iconoPlus = document.createElement('i');
+        iconoPlus.classList.add('bi', 'bi-plus-circle');
+
+        //icono borar
+        let iconoBorrar = document.createElement('i');
+        iconoBorrar.classList.add('bi', 'bi-trash');
+
+        //agregar icono a los botones
+        botonBorrar.appendChild(iconoBorrar);
+        botonPlus.appendChild(iconoPlus);
+
+        //agregar elementos al div
+        div.appendChild(botonPlus);
+        div.appendChild(boton);
+        div.appendChild(botonBorrar);
+
+        //agregar el div al div donde estan todos los estilos
+        document.getElementById('cajaEstilos').appendChild(div);
+        //alert('Salida: agregarEstilo()');
+      }
+    
+    /*
+      window.onload = function () {
+        google.script.run.withSuccessHandler(
+          function(obj){
+            Object.keys(obj).sort().forEach(propiedad => {
+
+              // Crear las propiedades de los botones de incio
+              let num = propiedad.slice(10);
+              if(!document.getElementById('estilo'+num)) agregarEstilo(num);
+
+              //actualizar el numero de estilo actual, para quedarnos con el maximo
+              if (num > estiloActual) estiloActual = num;
+
+               //si es el color de fondo
+              if(propiedad.slice(0, 10) == 'colorFondo'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => boton.style.backgroundColor = obj[propiedad]);
+              }
+              //si es el color de la letra
+              else if(propiedad.slice(0,10) == 'colorLetra'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => boton.style.color = obj[propiedad]);
+              }
+              //si es el color del borde superior
+              else if(propiedad.slice(0,10) == 'BordeSupCO'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => boton.style.borderTopColor = obj[propiedad]);
+              }
+              //si es el color del borde superior
+              else if(propiedad.slice(0,10) == 'BordeSupST'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => {
+                  boton.style.borderTopStyle = obtenerEstiloBorde(obj[propiedad]);
+                  boton.style.borderTopWidth = obtenerGrosorBorde(obj[propiedad]);
+                });
+              }
+              //si es el color del borde inf
+              else if(propiedad.slice(0,10) == 'BordeInfCO'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => boton.style.borderBottomColor = obj[propiedad]);
+              }
+              //si es el color del borde inf
+              else if(propiedad.slice(0,10) == 'BordeInfST'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => {
+                  boton.style.borderBottomStyle = obtenerEstiloBorde(obj[propiedad]);
+                  boton.style.borderBottomWidth = obtenerGrosorBorde(obj[propiedad]);
+                });
+              }
+              //si es el color del borde izq
+              else if(propiedad.slice(0,10) == 'BordeIzqCO'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => boton.style.borderLeftColor = obj[propiedad]);
+              }
+              //si es el color del borde inf
+              else if(propiedad.slice(0,10) == 'BordeIzqST'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => {
+                  boton.style.borderLeftStyle = obtenerEstiloBorde(obj[propiedad]);
+                  boton.style.borderLeftWidth = obtenerGrosorBorde(obj[propiedad]);
+                });
+              }
+              //si es el color del borde der
+              else if(propiedad.slice(0,10) == 'BordeDerCO'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => boton.style.borderRightColor = obj[propiedad]);
+              }
+              //si es el color del borde der
+              else if(propiedad.slice(0,10) == 'BordeDerST'){
+                let botones = document.getElementsByClassName('boton'+propiedad.slice(10));
+                Array.from(botones).forEach(boton => {
+                  boton.style.borderRightStyle = obtenerEstiloBorde(obj[propiedad]);
+                  boton.style.borderRightWidth = obtenerGrosorBorde(obj[propiedad]);
+                });
+              }
+            })
+          }).cargarEstilos();
+      }
+*/
+
+      function obtenerGrosorBorde(borde){
+        switch(borde){
+          case 'DOTTED': return 'medium';
+          case 'DASHED': return 'medium';
+          case 'SOLID': return 'thin';
+          case 'SOLID_MEDIUM': return 'medium';
+          case 'SOLID_THICK': return 'thick';
+          case 'DOUBLE': return 'medium';
+          dafualt: return 'none';
+        }
+      }
+
+      function obtenerEstiloBorde(borde){
+        switch(borde){
+          case 'DOTTED': return 'dotted';
+          case 'DASHED': return 'dashed';
+          case 'SOLID': return 'solid';
+          case 'SOLID_MEDIUM': return 'solid';
+          case 'SOLID_THICK': return 'solid';
+          case 'DOUBLE': return 'double';
+          dafualt: return 'none';
+        }
+      }
+    </script>
